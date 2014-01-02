@@ -34,10 +34,11 @@
  http://code.google.com/p/tweener/wiki/License
  */
 
-const GLib = imports.gi.GLib;
+const GLib = require('gi/GLib');
 
-const TweenList = imports.tweener.tweenList;
-const Signals = imports.signals;
+const Equations = require('tweener/equations');
+const TweenList = require('tweener/tweenList');
+const Signals = require('signals');
 
 var _inited = false;
 var _engineExists = false;
@@ -517,13 +518,13 @@ function _addTweenOrCaller(target, tweeningParameters, isCaller) {
 
     // FIXME: Tweener allows you to use functions with an all lower-case name
     if (typeof obj.transition == "string") {
-        transition = imports.tweener.equations[obj.transition];
+        transition = Equations[obj.transition];
     } else {
         transition = obj.transition;
     }
 
     if (!transition)
-        transition = imports.tweener.equations["easeOutExpo"];
+        transition = Equations.easeOutExpo;
 
     var tween;
 

@@ -18,7 +18,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-const Lang = imports.lang;
+const Lang = require('lang');
 
 const Antialias = {
     DEFAULT: 0,
@@ -143,5 +143,4 @@ const SurfaceType = {
 };
 
 // Merge stuff defined in native code
-Lang.copyProperties(imports.cairoNative, this);
-
+Lang.copyProperties(require('cairoNative'), this);

@@ -21,8 +21,8 @@
 
 // A layer of convenience and backwards-compatibility over GLib MainLoop facilities
 
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
+const GLib = require('gi/GLib');
+const GObject = require('gi/GObject');
 
 var _mainLoops = {};
 

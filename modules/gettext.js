@@ -24,7 +24,7 @@
  *
  * Usage:
  *
- * const Gettext = imports.gettext;
+ * const Gettext = require('gettext');
  *
  * Gettext.textdomain("myapp");
  * Gettext.bindtextdomain("myapp", "/usr/share/locale");
@@ -32,8 +32,8 @@
  * let translated = Gettext.gettext("Hello world!");
  */
 
-const GLib = imports.gi.GLib;
-const GjsPrivate = imports.gi.GjsPrivate;
+const GLib = require('gi/GLib');
+const GjsPrivate = require('gi/GjsPrivate');
 
 function textdomain(domain) {
     return GjsPrivate.textdomain(domain);

@@ -1,6 +1,6 @@
 
-const Gettext = imports.gettext;
-const Gtk = imports.gi.Gtk;
+const Gettext = require('gettext');
+const Gtk = require('gi/Gtk');
 
 Gettext.bindtextdomain("gnome-panel-3.0", "/usr/share/locale");
 Gettext.textdomain("gnome-panel-3.0");

@@ -29,6 +29,7 @@
 #endif
 
 #include <glib.h>
+#include <gio/gio.h>
 #include "gjs/jsapi-util.h"
 
 G_BEGIN_DECLS
@@ -44,6 +45,7 @@ JSObject* gjs_define_importer      (JSContext   *context,
                                     const char **initial_search_path,
                                     gboolean     add_standard_search_path);
 
+G_CONST_RETURN char * G_CONST_RETURN * gjs_get_search_path (void);
 
 G_END_DECLS
 

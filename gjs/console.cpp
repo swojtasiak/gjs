@@ -90,7 +90,7 @@ main(int argc, char **argv)
         filename = "<command line>";
         program_name = argv[0];
     } else if (argc <= 1) {
-        script = g_strdup("const Console = imports.console; Console.interact();");
+        script = g_strdup("const Console = require('console'); Console.interact();");
         len = strlen(script);
         filename = "<stdin>";
         program_name = argv[0];

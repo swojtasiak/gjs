@@ -6,7 +6,7 @@ Naming
 The module name is called 'cairo' and usually imported into
 the namespace as 'Cairo'.
 
-gjs> const Cairo = imports.cairo;
+gjs> const Cairo = require('cairo');
 
 Methods are studlyCaps, similar to other JavaScript apis, eg
 

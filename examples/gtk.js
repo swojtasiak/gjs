@@ -1,4 +1,5 @@
-const Gtk = imports.gi.Gtk;
+
+const Gtk = require('gi/Gtk');
 
 // This is a callback function. The data arguments are ignored
 // in this example. More on callbacks below.

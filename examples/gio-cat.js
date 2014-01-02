@@ -1,6 +1,6 @@
 
-const GLib = imports.gi.GLib;
-const Gio = imports.gi.Gio;
+const GLib = require('gi/GLib');
+const Gio = require('gi/Gio');
 
 let loop = GLib.MainLoop.new(null, false);
 

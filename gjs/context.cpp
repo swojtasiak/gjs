@@ -759,3 +759,9 @@ gjs_object_get_property_const(JSContext      *context,
     pname = gjs_context_get_const_string(context, property_name);
     return JS_GetPropertyById(context, obj, pname, value_p);
 }
+
+const char **
+gjs_context_get_search_path(GjsContext *context)
+{
+    return (const char **) context->search_path;
+}

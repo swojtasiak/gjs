@@ -1,5 +1,6 @@
-const Gtk = imports.gi.Gtk;
-const WebKit = imports.gi.WebKit;
+
+const Gtk = require('gi/Gtk');
+const WebKit = require('gi/WebKit');
 
 Gtk.init(null);
 

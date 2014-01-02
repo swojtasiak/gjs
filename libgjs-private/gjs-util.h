@@ -27,10 +27,10 @@
 
 G_BEGIN_DECLS
 
-/* For imports.format */
+/* For 'format' */
 char * gjs_format_int_alternative_output (int n);
 
-/* For imports.gettext */
+/* For 'gettext' */
 void gjs_textdomain     (const char *domain);
 void gjs_bindtextdomain (const char *domain,
                          const char *location);

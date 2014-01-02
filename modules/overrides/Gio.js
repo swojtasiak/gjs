@@ -18,11 +18,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-var GLib = imports.gi.GLib;
-var GObject = imports.gi.GObject;
-var GjsPrivate = imports.gi.GjsPrivate;
-var Lang = imports.lang;
-var Signals = imports.signals;
+const GLib = require('gi/GLib');
+const GObject = require('gi/GObject');
+const GjsPrivate = require('gi/GjsPrivate');
+const Lang = require('lang');
+const Signals = require('signals');
 var Gio;
 
 function _signatureLength(sig) {

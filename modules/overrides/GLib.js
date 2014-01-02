@@ -18,7 +18,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-const ByteArray = imports.byteArray;
+const ByteArray = require('byteArray');
 
 let GLib;
 let originalVariantClass;
@@ -246,7 +246,7 @@ function _unpack_variant(variant, deep) {
 }
 
 function _init() {
-    // this is imports.gi.GLib
+    // this is require('gi/GLib');
 
     GLib = this;
 
@@ -280,6 +280,6 @@ function _init() {
     }
 
     this.Bytes.prototype.toArray = function() {
-	return imports.byteArray.fromGBytes(this);
+	return require('byteArray').fromGBytes(this);
     }
 }

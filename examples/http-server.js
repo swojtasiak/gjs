@@ -1,6 +1,6 @@
 // This is a simple example of a HTTP server in Gjs using libsoup
 
-const Soup = imports.gi.Soup;
+const Soup = require('gi/Soup');
 
 function main() {
     let handler = function(server, msg, path, query, client) {

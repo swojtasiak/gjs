@@ -1,4 +1,5 @@
-const Clutter = imports.gi.Clutter;
+
+const Clutter = require('gi/Clutter');
 
 Clutter.init(null);
 

@@ -1006,7 +1006,7 @@ importer_new(JSContext *context,
     return importer;
 }
 
-static G_CONST_RETURN char * G_CONST_RETURN *
+G_CONST_RETURN char * G_CONST_RETURN *
 gjs_get_search_path(void)
 {
     char **search_path;

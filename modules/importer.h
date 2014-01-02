@@ -21,26 +21,18 @@
  * IN THE SOFTWARE.
  */
 
+#ifndef __GJS_MODULE_IMPORTER_H__
+#define __GJS_MODULE_IMPORTER_H__
+
 #include <config.h>
+#include <glib.h>
+#include "gjs/jsapi-util.h"
 
-#include <gjs/native.h>
-#include "modules.h"
+G_BEGIN_DECLS
 
-#ifdef ENABLE_CAIRO
-#include "cairo-module.h"
-#endif
+JSBool        gjs_js_define_importer_stuff   (JSContext      *context,
+                                              JSObject      **module_out);
 
-#include "system.h"
-#include "console.h"
-#include "importer.h"
+G_END_DECLS
 
-void
-gjs_register_static_modules (void)
-{
-#ifdef ENABLE_CAIRO
-    gjs_register_native_module("cairoNative", gjs_js_define_cairo_stuff);
-#endif
-    gjs_register_native_module("system", gjs_js_define_system_stuff);
-    gjs_register_native_module("_importer", gjs_js_define_importer_stuff);
-    gjs_register_native_module("console", gjs_define_console_stuff);
-}
+#endif  /* __GJS_MODULE_IMPORTER_H__ */

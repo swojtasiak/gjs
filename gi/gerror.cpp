@@ -29,7 +29,7 @@
 #include <gjs/compat.h>
 #include "boxed.h"
 #include "enumeration.h"
-#include "repo.h"
+#include "util.h"
 #include "gerror.h"
 
 #include <util/log.h>

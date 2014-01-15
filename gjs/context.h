@@ -79,6 +79,8 @@ void            gjs_dumpstack                     (void);
 
 const char **   gjs_context_get_search_path       (GjsContext *context);
 
+G_CONST_RETURN char * G_CONST_RETURN * gjs_get_search_path (void);
+
 G_END_DECLS
 
 #endif  /* __GJS_CONTEXT_H__ */

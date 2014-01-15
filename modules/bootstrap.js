@@ -6,6 +6,10 @@
 
     let _exports = {};
 
+    // This is where "unknown namespace" classes live, where we don't
+    // have info for them. One common example is GLocalFile.
+    _exports['gi/__gjsPrivateNS'] = {};
+
     function loadNativeModule(moduleID) {
         _exports[moduleID] = importNativeModule(moduleID);
     }
@@ -133,5 +137,133 @@
         throw new Error("Could not load module '" + moduleID + "'");
     }
     require.paths = Importer.getBuiltinSearchPath();
+
+    function installCompatImports() {
+        // imports.gi
+        let gi = new Proxy({
+            versions: {},
+        }, {
+            get: function(target, name) {
+                if (target[name])
+                    return target[name];
+
+                let version = target.versions[name] || null;
+                return importGIModuleWithOverrides(name, version);
+            },
+        });
+
+        function importModule(module, file) {
+            let success, script;
+            try {
+                [success, script] = file.load_contents(null);
+            } catch(e) {
+                return null;
+            }
+
+            // Don't catch errors for the eval, as those should propagate
+            // back up to the user...
+            Importer.evalWithScope(module, script, file.get_parse_name());
+            return module;
+        }
+
+        function importFile(parent, name, file) {
+            let module = {};
+            module.__file__ = file.get_parse_name();
+            module.__moduleName__ = name;
+            module.__parentModule__ = parent;
+            importModule(module, file);
+            return module;
+        }
+
+        function importDirectory(parent, name) {
+            let searchPath = parent.searchPath.map(function(path) {
+                return path + '/' + name;
+            }).filter(function(path) {
+                let file = Gio.File.new_for_commandline_arg(path);
+                let type = file.query_file_type(Gio.FileQueryInfoFlags.NONE, null);
+                return (type == Gio.FileType.DIRECTORY);
+            });
+
+            let module = createSearchPathImporter();
+            module.searchPath = searchPath;
+            module.__moduleName__ = name;
+            module.__parentModule__ = parent;
+
+            function runInit() {
+                for (let path of searchPath) {
+                    let initFile = Gio.File.new_for_commandline_arg(path + '/__init__.js');
+                    if (initFile.query_exists(null)) {
+                        importModule(module, initFile);
+                        return;
+                    }
+                }
+            }
+
+            runInit();
+
+            return module;
+        }
+
+        function tryImport(proxy, name) {
+            function tryPath(path) {
+                let file, type;
+                file = Gio.File.new_for_commandline_arg(path);
+                type = file.query_file_type(Gio.FileQueryInfoFlags.NONE, null);
+                if (type == Gio.FileType.DIRECTORY)
+                    return importDirectory(proxy, name);
+
+                file = Gio.File.new_for_commandline_arg(path + '.js');
+                if (file.query_exists(null))
+                    return importFile(proxy, name, file);
+
+                return null;
+            }
+
+            for (let path of proxy.searchPath) {
+                let modulePath = path + '/' + name;
+                let obj = tryPath(modulePath);
+                if (obj)
+                    return obj;
+            }
+            return null;
+        }
+
+        function createSearchPathImporter() {
+            let proxy = new Proxy({}, {
+                get: function(target, name) {
+                    if (target[name])
+                        return target[name];
+
+                    let obj = tryImport(proxy, name);
+                    target[obj] = obj;
+                    return obj;
+                },
+            });
+            return proxy;
+        }
+
+        let rootDirectoryImporter = createSearchPathImporter();
+        rootDirectoryImporter.searchPath = Importer.getBuiltinSearchPath();
+
+        // root importer, checks for native modules
+        let rootImporter = new Proxy(rootDirectoryImporter, {
+            get: function(target, name) {
+                if (target[name])
+                    return target[name];
+
+                let nativeModule = importNativeModule(name);
+                if (nativeModule) {
+                    target[name] = nativeModule;
+                    return nativeModule;
+                }
+
+                return rootDirectoryImporter[name];
+            },
+        });
+        rootImporter.gi = gi;
+
+        exports.imports = rootImporter;
+    }
+    installCompatImports();
 
 })(window, importNativeModule);

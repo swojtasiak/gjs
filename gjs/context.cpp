@@ -27,7 +27,6 @@
 
 #include "context.h"
 #include "bootstrap.h"
-#include "importer.h"
 #include "jsapi-util.h"
 #include "native.h"
 #include "byteArray.h"
@@ -73,7 +72,7 @@ struct _GjsContext {
 /* Keep this consistent with GjsConstString */
 static const char *const_strings[] = {
     "constructor", "prototype", "length",
-    "imports", "__parentModule__", "__init__", "searchPath",
+    "__parentModule__", "__init__", "searchPath",
     "__gjsKeepAlive", "__gjsPrivateNS",
     "gi", "versions", "overrides",
     "_init", "_new_internal", "new",
@@ -316,7 +315,6 @@ gjs_context_class_init(GjsContextClass *klass)
 
     gjs_register_native_module("byteArray", gjs_define_byte_array_stuff);
     gjs_register_native_module("_gi", gjs_define_private_gi_stuff);
-    gjs_register_native_module("gi", gjs_define_gi_stuff);
 
     gjs_register_static_modules();
 }
@@ -460,24 +458,6 @@ gjs_context_constructed(GObject *object)
                            (JSNative)gjs_printerr,
                            4, GJS_MODULE_PROP_FLAGS))
         g_error("Failed to define printerr function");
-
-    /* We create the global-to-runtime root importer with the
-     * passed-in search path. If someone else already created
-     * the root importer, this is a no-op.
-     */
-    if (!gjs_create_root_importer(js_context->context,
-                                  js_context->search_path ?
-                                  (const char**) js_context->search_path :
-                                  NULL,
-                                  TRUE))
-        g_error("Failed to create root importer");
-
-    /* Now copy the global root importer (which we just created,
-     * if it didn't exist) to our global object
-     */
-    if (!gjs_define_root_importer(js_context->context,
-                                  js_context->global))
-        g_error("Failed to point 'imports' property at root importer");
 
     if (!gjs_run_bootstrap(js_context->context))
         g_error("Failed to bootstrap GJS context");
@@ -764,4 +744,49 @@ const char **
 gjs_context_get_search_path(GjsContext *context)
 {
     return (const char **) context->search_path;
+}
+
+char ** gjs_search_path;
+
+G_CONST_RETURN char * G_CONST_RETURN *
+gjs_get_search_path(void)
+{
+    char **search_path;
+
+    /* not thread safe */
+
+    if (!gjs_search_path) {
+        G_CONST_RETURN gchar* G_CONST_RETURN * system_data_dirs;
+        const char *envstr;
+        GPtrArray *path;
+        gsize i;
+
+        path = g_ptr_array_new();
+
+        /* in order of priority */
+
+        /* $GJS_PATH */
+        envstr = g_getenv("GJS_PATH");
+        if (envstr) {
+            char **dirs, **d;
+            dirs = g_strsplit(envstr, G_SEARCHPATH_SEPARATOR_S, 0);
+            for (d = dirs; *d != NULL; d++)
+                g_ptr_array_add(path, *d);
+            /* we assume the array and strings are allocated separately */
+            g_free(dirs);
+        }
+
+        /* ${datadir}/share/gjs-1.0 */
+        g_ptr_array_add(path, g_strdup("resource:///org/gnome/gjs/modules/"));
+
+        g_ptr_array_add(path, NULL);
+
+        search_path = (char**)g_ptr_array_free(path, FALSE);
+
+        gjs_search_path = search_path;
+    } else {
+        search_path = gjs_search_path;
+    }
+
+    return (G_CONST_RETURN char * G_CONST_RETURN *)search_path;
 }

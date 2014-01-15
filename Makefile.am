@@ -31,7 +31,6 @@ nobase_gjs_module_include_HEADERS =	\
 	gjs/gjs-module.h	\
 	gjs/compat.h		\
 	gjs/byteArray.h		\
-	gjs/importer.h		\
 	gjs/jsapi-util.h	\
 	gjs/runtime.h		\
 	gjs/type-module.h	\
@@ -41,7 +40,7 @@ nobase_gjs_module_include_HEADERS =	\
 	gi/object.h	\
 	gi/foreign.h	\
 	gi/param.h	\
-	gi/repo.h	\
+	gi/util.h	\
 	gi/union.h	\
 	gi/value.h	\
 	gi/arg.h	\
@@ -105,9 +104,7 @@ libgjs_la_SOURCES =		\
 	gjs/byteArray.cpp		\
 	gjs/context.cpp		\
 	gjs/bootstrap.cpp	\
-	gjs/importer.cpp		\
 	gjs/gi.h		\
-	gjs/gi.cpp		\
 	gjs/jsapi-private.cpp	\
 	gjs/jsapi-util.cpp	\
 	gjs/jsapi-dynamic-class.cpp \
@@ -142,7 +139,7 @@ libgjs_la_SOURCES += \
 	gi/foreign.cpp	\
 	gi/param.cpp	\
 	gi/proxyutils.cpp	\
-        gi/repo.cpp	\
+        gi/util.cpp	\
 	gi/union.cpp	\
         gi/value.cpp	\
 	gi/interface.cpp	\

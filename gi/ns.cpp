@@ -24,7 +24,7 @@
 #include <config.h>
 
 #include "ns.h"
-#include "repo.h"
+#include "util.h"
 #include "param.h"
 #include <gjs/gjs-module.h>
 #include <gjs/compat.h>

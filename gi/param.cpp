@@ -28,7 +28,7 @@
 #include "param.h"
 #include "arg.h"
 #include "object.h"
-#include "repo.h"
+#include "util.h"
 #include "gtype.h"
 #include <gjs/gjs-module.h>
 #include <gjs/compat.h>

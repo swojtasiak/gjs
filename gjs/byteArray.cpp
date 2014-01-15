@@ -544,7 +544,7 @@ byte_array_get_prototype(JSContext *context)
     JSObject *prototype;
 
     if (!gjs_eval_with_scope(context, NULL,
-                             "imports.byteArray.ByteArray.prototype;", -1,
+                            "require('byteArray').ByteArray.prototype;", -1,
                              "<internal>", &retval))
         g_error ("Could not import byte array prototype\n");
 

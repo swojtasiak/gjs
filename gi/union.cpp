@@ -25,7 +25,6 @@
 
 #include <string.h>
 
-/* include first for logging related #define used in repo.h */
 #include <util/log.h>
 
 #include "union.h"
@@ -33,7 +32,7 @@
 #include "object.h"
 #include <gjs/gjs-module.h>
 #include <gjs/compat.h>
-#include "repo.h"
+#include "util.h"
 #include "proxyutils.h"
 #include "function.h"
 #include "gtype.h"

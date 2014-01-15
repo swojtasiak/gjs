@@ -30,7 +30,7 @@
 #include "object.h"
 #include <gjs/gjs-module.h>
 #include <gjs/compat.h>
-#include "repo.h"
+#include "util.h"
 #include "proxyutils.h"
 #include "function.h"
 #include "gtype.h"

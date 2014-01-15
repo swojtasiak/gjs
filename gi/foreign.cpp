@@ -69,26 +69,23 @@ gjs_foreign_load_foreign_module(JSContext *context,
         if (strcmp(gi_namespace, foreign_modules[i].gi_namespace) != 0)
             continue;
 
-        if (foreign_modules[i].loaded) {
+        if (foreign_modules[i].loaded)
             return JS_TRUE;
-        }
 
         // FIXME: Find a way to check if a module is imported
         //        and only execute this statement if isn't
-        script = g_strdup_printf("imports.%s;", gi_namespace);
-        if (!gjs_context_eval((GjsContext*) JS_GetContextPrivate(context), script, strlen(script),
-                              "<internal>", &code,
-                              &error)) {
-            g_printerr("ERROR: %s\n", error->message);
+        script = g_strdup_printf("require('%s');", gi_namespace);
+        if (!gjs_eval_with_scope(context, NULL, script, -1, "<internal>", NULL)) {
             g_free(script);
-            g_error_free(error);
             return JS_FALSE;
         }
+
         g_free(script);
         foreign_modules[i].loaded = TRUE;
+        return JS_TRUE;
     }
 
-    return JS_TRUE;
+    return JS_FALSE;
 }
 
 JSBool

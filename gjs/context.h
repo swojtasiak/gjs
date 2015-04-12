@@ -69,6 +69,8 @@ void            gjs_context_make_current         (GjsContext *js_context);
 
 void*           gjs_context_get_native_context   (GjsContext *js_context);
 
+void*           gjs_context_get_native_global    (GjsContext *js_context);
+
 void            gjs_context_print_stack_stderr    (GjsContext *js_context);
 
 void            gjs_context_maybe_gc              (GjsContext  *context);

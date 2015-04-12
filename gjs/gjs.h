@@ -25,5 +25,6 @@
 #define __GJS_GJS_H__
 
 #include <gjs/context.h>
+#include <gjs/debugger.h>
 
 #endif /* __GJS_GJS_H__ */

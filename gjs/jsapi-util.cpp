@@ -1284,13 +1284,8 @@ gjs_strip_unix_shebang(const char  *script,
         const char *s = (const char *) strstr (script, "\n");
         if (s != NULL) {
             if (*script_len > 0)
-                *script_len -= (s + 1 - script);
-            script = s + 1;
-
-            if (start_line_number_out)
-                *start_line_number_out = 2;
-
-            return script;
+                *script_len -= (s - script);
+            script = s;
         } else {
             /* Just a shebang */
             if (start_line_number_out)
@@ -1340,7 +1335,7 @@ gjs_eval_with_scope(JSContext    *context,
     JS::CompileOptions options(context);
     options.setUTF8(true)
            .setFileAndLine(filename, start_line_number)
-           .setSourcePolicy(JS::CompileOptions::LAZY_SOURCE);
+           .setSourcePolicy(JS::CompileOptions::SAVE_SOURCE);
 
     js::RootedObject rootedObj(context, object);
 

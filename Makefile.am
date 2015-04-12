@@ -27,6 +27,7 @@ gjs_module_includedir = $(includedir)/gjs-1.0
 ########################################################################
 nobase_gjs_public_include_HEADERS =	\
 	gjs/context.h		\
+	gjs/debugger.h	\
 	gjs/gjs.h
 
 nobase_gjs_module_include_HEADERS =	\
@@ -89,6 +90,7 @@ lib_LTLIBRARIES += libgjs.la
 libgjs_la_CPPFLAGS =		\
 	$(AM_CPPFLAGS)		\
 	$(GJS_CFLAGS)	\
+	$(JSRDBG_CFLAGS)	\
 	$(gjs_directory_defines)\
 	-I$(top_srcdir)/gi	\
 	-DGJS_COMPILATION
@@ -100,7 +102,8 @@ libgjs_la_LDFLAGS = 		\
 	-no-undefined \
 	-rdynamic
 libgjs_la_LIBADD = 		\
-	$(GJS_LIBS)
+	$(GJS_LIBS)		\
+	$(JSRDBG_LIBS)
 
 if ENABLE_GTK
 libgjs_la_CPPFLAGS += $(GJS_GTK_CFLAGS)
@@ -110,6 +113,7 @@ endif
 libgjs_la_SOURCES =		\
 	gjs/byteArray.cpp		\
 	gjs/context.cpp		\
+	gjs/debugger.cpp	\
 	gjs/importer.cpp		\
 	gjs/gi.h		\
 	gjs/gi.cpp		\

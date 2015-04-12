@@ -28,7 +28,13 @@
 
 #include <gjs/gjs.h>
 #include <gjs/coverage.h>
+#include <gjs/debugger.h>
 
+static gboolean debugger_enabled = FALSE;
+static gboolean debugger_suspended = FALSE;
+static gboolean debugger_continuation = FALSE;
+static char *debugger_host = NULL;
+static gint debugger_port = 8089;
 static char **include_path = NULL;
 static char **coverage_paths = NULL;
 static char *coverage_output_path = NULL;
@@ -39,6 +45,11 @@ static GOptionEntry entries[] = {
     { "coverage-path", 'C', 0, G_OPTION_ARG_STRING_ARRAY, &coverage_paths, "Add the filename FILE to the list of files to generate coverage info for", "FILE" },
     { "coverage-output", 0, 0, G_OPTION_ARG_STRING, &coverage_output_path, "Write coverage output to a directory DIR. This option is mandatory when using --coverage-path", "DIR", },
     { "include-path", 'I', 0, G_OPTION_ARG_STRING_ARRAY, &include_path, "Add the directory DIR to the list of directories to search for js files.", "DIR" },
+    { "debugger", 'D', 0, G_OPTION_ARG_NONE, &debugger_enabled, "Enables the JS remote debugger.", NULL },
+    { "debugger-suspended", 'S', 0, G_OPTION_ARG_NONE, &debugger_suspended, "Starts debugger in suspended state.", NULL },
+    { "debugger-continuation", 'R', 0, G_OPTION_ARG_NONE, &debugger_continuation, "Continues execution when all clients have disconnected.", NULL },
+    { "debugger-host", 'H', 0, G_OPTION_ARG_STRING, &debugger_host, "A host the debugger should be bound to.", NULL },
+    { "debugger-port", 'P', 0, G_OPTION_ARG_INT, &debugger_port, "A post the debugger should be bound to.", NULL },
     { NULL }
 };
 
@@ -62,6 +73,7 @@ main(int argc, char **argv)
     GOptionContext *context;
     GError *error = NULL;
     GjsContext *js_context;
+    GjsDebugger *js_debugger = NULL;
     GjsCoverage *coverage = NULL;
     char *script;
     const char *filename;
@@ -117,6 +129,37 @@ main(int argc, char **argv)
                                             "program-name", program_name,
                                             NULL);
 
+    if( debugger_enabled ) {
+
+        js_debugger = (GjsDebugger*) g_object_new(GJS_TYPE_DEBUGGER,
+                                                  "host", debugger_host,
+                                                  "port", debugger_port,
+                                                  NULL);
+
+        GjsDebuggerEngineOptions options;
+        options.continuation = debugger_continuation;
+        options.suspend = debugger_suspended;
+        options.source_displacement = -1;
+
+        if( !gjs_debugger_install( js_debugger, js_context, "gjs-console", &options, &error ) ) {
+            g_printerr("Failed to install debugger for JSContext: %s\n", error->message);
+            g_clear_error(&error);
+            goto out;
+        }
+
+        if( !gjs_debugger_start( js_debugger, &error ) ) {
+            g_printerr("Failed to start JS debugger: %s\n", error->message);
+            g_clear_error(&error);
+            goto out;
+        }
+
+        g_print("Debugger is listening on port: %d\n", debugger_port);
+        if( debugger_suspended ) {
+            g_print("Application is suspended.\n");
+        }
+
+    }
+
     if (coverage_paths) {
         if (!coverage_output_path)
             g_error("--coverage-output is required when taking coverage statistics");
@@ -148,8 +191,14 @@ main(int argc, char **argv)
 
     /* Probably doesn't make sense to write statistics on failure */
     if (coverage && code == 0)
-        gjs_coverage_write_statistics(coverage,
-                                      coverage_output_path);
+         gjs_coverage_write_statistics(coverage,
+                                       coverage_output_path);
+
+    if( debugger_enabled ) {
+        gjs_debugger_stop( js_debugger, &error );
+        gjs_debugger_uninstall( js_debugger, js_context, &error );
+        g_object_unref(js_debugger);
+    }
  
     g_object_unref(js_context);
     g_free(script);

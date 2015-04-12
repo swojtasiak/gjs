@@ -87,6 +87,7 @@ PKG_CHECK_MODULES([GOBJECT], [gobject-2.0 >= glib_required_version])
 PKG_CHECK_MODULES([GJS], [$gjs_packages])
 PKG_CHECK_MODULES([GJS_GDBUS], [$gjs_gdbus_packages])
 PKG_CHECK_MODULES([GJSTESTS], [$gjstests_packages])
+PKG_CHECK_MODULES([JSRDBG], [libjsrdbg >= 0.0.2])
 
 # Optional cairo dep (enabled by default)
 AC_ARG_WITH(cairo,

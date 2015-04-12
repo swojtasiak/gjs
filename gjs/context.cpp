@@ -626,6 +626,13 @@ gjs_context_get_native_context (GjsContext *js_context)
     return js_context->context;
 }
 
+void*
+gjs_context_get_native_global (GjsContext *js_context)
+{
+    g_return_val_if_fail(GJS_IS_CONTEXT(js_context), NULL);
+    return js_context->global;
+}
+
 gboolean
 gjs_context_eval(GjsContext   *js_context,
                  const char   *script,
